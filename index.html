@@ -38,6 +38,9 @@
                             <a href="#servicios" class="nav-link">Servicios</a>
                         </li>
                         <li class="nav-item">
+                            <a href="#galeria" class="nav-link">Galería</a>
+                        </li>
+                        <li class="nav-item">
                             <a href="#testimonios" class="nav-link">Testimonios</a>
                         </li>
                         <li class="nav-item">
@@ -57,11 +60,15 @@
     <!-- Hero Section -->
     <section id="inicio" class="hero">
         <div class="hero-video">
-            <video autoplay muted loop playsinline preload="metadata">
+            <!-- Video para desktop -->
+            <video class="hero-video-desktop" autoplay muted loop playsinline preload="metadata"
+                poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1920 1080'%3E%3Crect width='1920' height='1080' fill='%23000000'/%3E%3C/svg%3E">
+                <source src="assets/img/hero.mp4" type="video/mp4; codecs=avc1.42E01E,mp4a.40.2">
                 <source src="assets/img/hero.mp4" type="video/mp4">
-                <!-- Fallback para navegadores que no soporten video -->
-                <div class="video-fallback"></div>
             </video>
+            <!-- GIF para móviles -->
+            <img class="hero-gif-mobile" src="assets/img/hero.gif" alt="Chile Eventos Background" loading="lazy">
+            <div class="video-fallback"></div>
             <div class="hero-overlay"></div>
         </div>
         <div class="hero-container">
@@ -81,6 +88,14 @@
                 </div>
             </div>
         </div>
+        <!-- Flecha de scroll -->
+        <div class="scroll-arrow">
+            <a href="#nosotros" class="scroll-arrow-link" aria-label="Desplazarse hacia abajo">
+                <svg class="scroll-arrow-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/>
+                </svg>
+            </a>
+        </div>
     </section>
 
     <!-- About Section -->
@@ -92,18 +107,21 @@
             </div>
 
             <div class="about-content">
-                <div class="about-text">
-                    <h3>¿Por qué nos prefieren?</h3>
-                    <p>Nuestros clientes prefieren Chile Eventos por nuestra reconocida trayectoria de más de 30 años en
-                        producción artística y cultural. Generamos oportunidades laborales y desarrollo profesional
-                        tanto para artistas como técnicos, asegurando calidad y profesionalismo en cada evento
-                        realizado.</p>
-
-                    <h3>Nuestra Historia</h3>
-                    <p>Chile Eventos ha sido una marca reconocida durante tres décadas en la producción artística y
-                        cultural, facilitando plataformas de exposición y desarrollo profesional a numerosos artistas y
-                        especialistas en técnicas audiovisuales. Nuestra experiencia nos posiciona como líderes
-                        confiables y comprometidos con el talento local.</p>
+                <div class="about-text-sections">
+                    <div class="about-text-item">
+                        <h3>¿Por qué nos prefieren?</h3>
+                        <p>Nuestros clientes prefieren Chile Eventos por nuestra reconocida trayectoria de más de 30 años en
+                            producción artística y cultural. Generamos oportunidades laborales y desarrollo profesional
+                            tanto para artistas como técnicos, asegurando calidad y profesionalismo en cada evento
+                            realizado.</p>
+                    </div>
+                    <div class="about-text-item">
+                        <h3>Nuestra Historia</h3>
+                        <p>Chile Eventos ha sido una marca reconocida durante tres décadas en la producción artística y
+                            cultural, facilitando plataformas de exposición y desarrollo profesional a numerosos artistas y
+                            especialistas en técnicas audiovisuales. Nuestra experiencia nos posiciona como líderes
+                            confiables y comprometidos con el talento local.</p>
+                    </div>
                 </div>
 
                 <div class="mission-vision">
@@ -191,11 +209,14 @@
     <!-- Services Section -->
     <section id="servicios" class="services">
         <div class="services-video">
-            <video autoplay muted loop playsinline preload="metadata">
+            <!-- Video para desktop -->
+            <video class="services-video-desktop" autoplay muted loop playsinline preload="metadata">
                 <source src="assets/img/section.mp4" type="video/mp4">
-                <!-- Fallback para navegadores que no soporten video -->
-                <div class="services-video-fallback"></div>
             </video>
+            <!-- GIF para móviles -->
+            <img class="services-gif-mobile" src="assets/img/section.gif" alt="Chile Eventos Services Background"
+                loading="lazy">
+            <div class="services-video-fallback"></div>
             <div class="services-overlay"></div>
         </div>
         <div class="container">
@@ -207,10 +228,7 @@
             <div class="services-grid">
                 <div class="service-card">
                     <div class="service-icon">
-                        <svg viewBox="0 0 24 24" fill="currentColor">
-                            <path
-                                d="M12 2c.41 0 .75.34.75.75v1.5c0 .41-.34.75-.75.75s-.75-.34-.75-.75v-1.5c0-.41.34-.75.75-.75zm4.5 2.5c.41 0 .75.34.75.75s-.34.75-.75.75h-9c-.41 0-.75-.34-.75-.75s.34-.75.75-.75h9zm-9 3c-.41 0-.75.34-.75.75v11c0 .41.34.75.75.75h9c.41 0 .75-.34.75-.75v-11c0-.41-.34-.75-.75-.75h-9zm1.5 2.25h6v1.5h-6v-1.5zm0 3h6v1.5h-6v-1.5zm0 3h6v1.5h-6v-1.5z" />
-                        </svg>
+                        <img src="assets/img/prodartistica.jpg" alt="Producción Artística" loading="lazy">
                     </div>
                     <h3>Producción Artística</h3>
                     <p>Organizamos eventos artísticos y culturales de alto nivel con equipos técnicos especializados.
@@ -226,10 +244,7 @@
 
                 <div class="service-card">
                     <div class="service-icon">
-                        <svg viewBox="0 0 24 24" fill="currentColor">
-                            <path
-                                d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
-                        </svg>
+                        <img src="assets/img/prodcultural.jpg" alt="Producción Cultural" loading="lazy">
                     </div>
                     <h3>Producción Cultural</h3>
                     <p>Creamos experiencias culturales memorables que conectan con el público y potencian el talento
@@ -245,10 +260,7 @@
 
                 <div class="service-card">
                     <div class="service-icon">
-                        <svg viewBox="0 0 24 24" fill="currentColor">
-                            <path
-                                d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" />
-                        </svg>
+                        <img src="assets/img/audiopro.jpg" alt="Audio Profesional" loading="lazy">
                     </div>
                     <h3>Audio Profesional</h3>
                     <p>Equipamiento de sonido de última generación con técnicos especializados para garantizar la mejor
@@ -264,10 +276,7 @@
 
                 <div class="service-card">
                     <div class="service-icon">
-                        <svg viewBox="0 0 24 24" fill="currentColor">
-                            <path
-                                d="M9 21c0 .5.4 1 1 1h4c.6 0 1-.5 1-1v-1H9v1zm3-19C8.1 2 5 5.1 5 9c0 2.4 1.2 4.5 3 5.7V17c0 .5.4 1 1 1h6c.6 0 1-.5 1-1v-2.3c1.8-1.3 3-3.4 3-5.7 0-3.9-3.1-7-7-7z" />
-                        </svg>
+                        <img src="assets/img/iluminacion.jpg" alt="Iluminación Profesional" loading="lazy">
                     </div>
                     <h3>Iluminación Profesional</h3>
                     <p>Sistemas de iluminación escénica avanzados que crean ambientes únicos y realzan cada presentación
@@ -373,6 +382,71 @@
             </div>
         </div>
     </section>
+
+    <!-- Gallery Section -->
+    <section id="galeria" class="gallery" role="region" aria-labelledby="gallery-heading">
+        <div class="container">
+            <!-- Encabezado de la sección -->
+            <div class="section-header">
+                <h2 id="gallery-heading" class="section-title">Galería de Eventos</h2>
+                <p class="section-subtitle">Algunos de nuestros eventos y producciones realizadas</p>
+            </div>
+        
+            <!-- Contenedor principal del carrusel -->
+            <div class="gallery-carousel">
+                <!-- Contenedor donde se cargan dinámicamente las imágenes -->
+                <div class="gallery-container" id="galleryContainer">
+                    <!-- Las imágenes se cargarán dinámicamente con JavaScript -->
+                </div>
+                
+                <!-- Controles de navegación del carrusel -->
+                <div class="gallery-controls">
+                    <button class="gallery-btn gallery-prev" id="galleryPrev" aria-label="Imagen anterior">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                        </svg>
+                    </button>
+                    <button class="gallery-btn gallery-next" id="galleryNext" aria-label="Siguiente imagen">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                        </svg>
+                    </button>
+                </div>
+                
+                <!-- Indicadores de posición del carrusel -->
+                <div class="gallery-indicators" id="galleryIndicators">
+                    <!-- Los indicadores se generarán dinámicamente -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal para visualización ampliada de imágenes -->
+    <div id="galleryModal" class="gallery-modal" role="dialog" aria-labelledby="modal-title" aria-hidden="true">
+        <div class="modal-content">
+            <!-- Botón para cerrar el modal -->
+            <button class="modal-close" id="modalClose" aria-label="Cerrar galería">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                </svg>
+            </button>
+            <!-- Imagen principal del modal -->
+            <img id="modalImage" src="" alt="" loading="lazy">
+            <!-- Navegación dentro del modal -->
+            <div class="modal-nav">
+                <button class="modal-btn modal-prev" id="modalPrev" aria-label="Imagen anterior">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                    </svg>
+                </button>
+                <button class="modal-btn modal-next" id="modalNext" aria-label="Siguiente imagen">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- Contact Section -->
     <section id="contacto" class="contact">

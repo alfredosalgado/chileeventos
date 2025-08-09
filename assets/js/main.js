@@ -150,57 +150,100 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Función para manejar el video del hero
     function handleHeroVideo() {
-        const video = document.querySelector('.hero-video video');
-        if (video) {
+        const video = document.querySelector('.hero-video-desktop');
+        const gif = document.querySelector('.hero-gif-mobile');
+        const fallback = document.querySelector('.video-fallback');
+        
+        const isMobile = window.innerWidth < 768;
+        
+        // En móviles, usar GIFs (más simple y confiable)
+        if (isMobile) {
+            console.log('Dispositivo móvil detectado, usando GIF');
+            if (gif) {
+                gif.style.display = 'block';
+                gif.style.zIndex = '2';
+            }
+            if (fallback) {
+                fallback.style.display = 'none';
+            }
+            return; // Salir temprano para móviles
+        }
+        
+        // Lógica para desktop con videos
+        console.log('Dispositivo desktop detectado, usando video');
+        if (video && fallback) {
             // Configurar video para mejor rendimiento
             video.setAttribute('webkit-playsinline', 'true');
             video.setAttribute('playsinline', 'true');
             
-            // Pausar video en dispositivos móviles para ahorrar batería
-            if (window.innerWidth < 768) {
-                video.pause();
+            let videoCanPlay = false;
+            
+            // Función para mostrar fallback
+            function showFallback() {
+                console.log('Mostrando fallback del hero (desktop)');
                 video.style.display = 'none';
-                // Mostrar fallback en móviles
-                const fallback = document.querySelector('.video-fallback');
-                if (fallback) {
-                    fallback.style.display = 'block';
-                }
-            } else {
-                // Reanudar/pausar según visibilidad usando Intersection Observer
-                const videoObserver = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            video.play().catch(e => {
-                                console.log('Error al reproducir video:', e);
-                                // Mostrar fallback si hay error
-                                const fallback = document.querySelector('.video-fallback');
-                                if (fallback) {
-                                    fallback.style.display = 'block';
-                                }
-                            });
-                        } else {
-                            video.pause();
-                        }
-                    });
-                }, { threshold: 0.25 });
-                
-                videoObserver.observe(video);
+                fallback.style.display = 'block';
+                fallback.style.zIndex = '2';
             }
             
-            // Manejar errores de carga del video
-            video.addEventListener('error', function() {
-                console.log('Error al cargar el video, mostrando fallback');
-                const fallback = document.querySelector('.video-fallback');
-                if (fallback) {
-                    fallback.style.display = 'block';
+            // Función para mostrar video
+            function showVideo() {
+                console.log('Mostrando video del hero (desktop)');
+                video.style.display = 'block';
+                video.style.zIndex = '2';
+                fallback.style.display = 'none';
+            }
+            
+            // Función para intentar reproducir video
+            function tryPlayVideo() {
+                if (!videoCanPlay) {
+                    console.log('Video no está listo para reproducir');
+                    return;
                 }
-                video.style.display = 'none';
+                
+                const playPromise = video.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        console.log('Video del hero reproduciéndose correctamente (desktop)');
+                        showVideo();
+                    }).catch(e => {
+                        console.log('Error al reproducir video del hero (desktop):', e);
+                        showFallback();
+                    });
+                } else {
+                    console.log('Play promise no disponible, mostrando fallback');
+                    showFallback();
+                }
+            }
+            
+            // Detectar si el video puede reproducirse
+            video.addEventListener('canplay', function() {
+                videoCanPlay = true;
+                console.log('Video del hero puede reproducirse (desktop)');
+                tryPlayVideo();
             });
             
-            // Optimizar rendimiento del video
-            video.addEventListener('loadeddata', function() {
-                console.log('Video cargado correctamente');
+            // Manejar errores de carga
+            video.addEventListener('error', function() {
+                console.log('Error al cargar video del hero (desktop)');
+                showFallback();
             });
+            
+            // Intersection Observer para pausar/reanudar
+            const videoObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && videoCanPlay) {
+                        tryPlayVideo();
+                    } else if (!entry.isIntersecting) {
+                        video.pause();
+                    }
+                });
+            }, { 
+                threshold: 0.1,
+                rootMargin: '50px'
+            });
+            
+            videoObserver.observe(video);
         }
     }
     
@@ -209,42 +252,64 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Función para manejar el video de la sección servicios
     function handleServicesVideo() {
-        const video = document.querySelector('.services-video video');
+        const video = document.querySelector('.services-video-desktop');
+        const gif = document.querySelector('.services-gif-mobile');
+        const fallback = document.querySelector('.services-video-fallback');
+        
+        const isMobile = window.innerWidth < 768;
+        
+        // En móviles, usar GIFs (más simple y confiable)
+        if (isMobile) {
+            console.log('Dispositivo móvil detectado para servicios, usando GIF');
+            if (gif) {
+                gif.style.display = 'block';
+                gif.style.zIndex = '1';
+            }
+            if (fallback) {
+                fallback.style.display = 'none';
+            }
+            return; // Salir temprano para móviles
+        }
+        
+        // Lógica para desktop con videos
         if (video) {
             // Configurar video para mejor rendimiento
             video.setAttribute('webkit-playsinline', 'true');
             video.setAttribute('playsinline', 'true');
             
-            // Pausar video en dispositivos móviles para ahorrar batería
-            if (window.innerWidth < 768) {
-                video.pause();
-                video.style.display = 'none';
-                // Mostrar fallback en móviles
-                const fallback = document.querySelector('.services-video-fallback');
-                if (fallback) {
-                    fallback.style.display = 'block';
-                }
-            } else {
-                // Reanudar/pausar según visibilidad usando Intersection Observer
-                const videoObserver = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            video.play().catch(e => {
+            // Configurar video para todos los dispositivos con optimizaciones específicas
+            const isMobile = window.innerWidth < 768;
+            
+            // Reanudar/pausar según visibilidad usando Intersection Observer
+            const videoObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        // Intentar reproducir el video
+                        const playPromise = video.play();
+                        if (playPromise !== undefined) {
+                            playPromise.catch(e => {
                                 console.log('Error al reproducir video de servicios:', e);
                                 // Mostrar fallback si hay error
                                 const fallback = document.querySelector('.services-video-fallback');
                                 if (fallback) {
                                     fallback.style.display = 'block';
+                                    video.style.display = 'none';
                                 }
                             });
-                        } else {
+                        }
+                    } else {
+                        // Solo pausar si no es móvil o si el usuario no está interactuando
+                        if (!isMobile) {
                             video.pause();
                         }
-                    });
-                }, { threshold: 0.3 });
-                
-                videoObserver.observe(video);
-            }
+                    }
+                });
+            }, { 
+                threshold: isMobile ? 0.2 : 0.3,
+                rootMargin: isMobile ? '30px' : '0px'
+            });
+            
+            videoObserver.observe(video);
             
             // Manejar errores de carga del video
             video.addEventListener('error', function() {
@@ -265,6 +330,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Inicializar manejo del video de servicios
     handleServicesVideo();
+    
+
     
     // Efecto parallax sutil en el hero (solo para contenido, no video)
     window.addEventListener('scroll', function() {
@@ -378,24 +445,20 @@ document.addEventListener('DOMContentLoaded', function() {
             'assets/img/logo.jpg'
         ];
         
-        // Precargar videos solo en desktop
-        if (window.innerWidth >= 768) {
-            // Precargar video del hero
-            const heroVideoLink = document.createElement('link');
-            heroVideoLink.rel = 'preload';
-            heroVideoLink.as = 'video';
-            heroVideoLink.href = 'assets/img/hero.mp4';
-            heroVideoLink.type = 'video/mp4';
-            document.head.appendChild(heroVideoLink);
-            
-            // Precargar video de servicios
-            const servicesVideoLink = document.createElement('link');
-            servicesVideoLink.rel = 'preload';
-            servicesVideoLink.as = 'video';
-            servicesVideoLink.href = 'assets/img/section.mp4';
-            servicesVideoLink.type = 'video/mp4';
-            document.head.appendChild(servicesVideoLink);
-        }
+        // Precargar videos para todos los dispositivos (optimizado)
+        const heroVideoLink = document.createElement('link');
+        heroVideoLink.rel = 'preload';
+        heroVideoLink.as = 'video';
+        heroVideoLink.href = 'assets/img/hero.mp4';
+        heroVideoLink.type = 'video/mp4';
+        document.head.appendChild(heroVideoLink);
+        
+        const servicesVideoLink = document.createElement('link');
+        servicesVideoLink.rel = 'preload';
+        servicesVideoLink.as = 'video';
+        servicesVideoLink.href = 'assets/img/section.mp4';
+        servicesVideoLink.type = 'video/mp4';
+        document.head.appendChild(servicesVideoLink);
         
         criticalImages.forEach(src => {
             const link = document.createElement('link');
@@ -467,4 +530,334 @@ document.addEventListener('DOMContentLoaded', function() {
     document.head.appendChild(styleSheet);
     
     console.log('Chile Eventos - Sitio web cargado correctamente');
-});
+}); 
+   // Función para inicializar la galería
+    function initGallery() {
+        // CONFIGURACIÓN PRINCIPAL
+        const TOTAL_IMAGES = 31; // Número total de imágenes (1.jpg hasta 31.jpg)
+        const AUTO_ADVANCE_INTERVAL = 4000; // Tiempo para avance automático (4 segundos)
+        
+        // Elementos DOM principales
+        const galleryContainer = document.querySelector('.gallery-container');
+        const modal = document.getElementById('galleryModal');
+        const modalImg = document.getElementById('modalImage');
+        const closeModal = document.querySelector('.modal-close');
+        const prevModalBtn = document.querySelector('.modal-prev');
+        const nextModalBtn = document.querySelector('.modal-next');
+        const prevCarouselBtn = document.querySelector('.gallery-prev');
+        const nextCarouselBtn = document.querySelector('.gallery-next');
+        const indicators = document.querySelector('.gallery-indicators');
+        
+        // Variables de estado
+        let currentCarouselIndex = 0;
+        let currentModalIndex = 0;
+        let imagesPerView = getImagesPerView();
+        let totalSlides = Math.ceil(TOTAL_IMAGES / imagesPerView);
+        let autoAdvanceTimer = null;
+        let isUserInteracting = false;
+        
+        /**
+         * Determina cuántas imágenes mostrar según el tamaño de pantalla
+         */
+        function getImagesPerView() {
+            const width = window.innerWidth;
+            if (width >= 1024) {
+                return 4; // Desktop - mostrar 4 imágenes
+            } else if (width >= 768) {
+                return 3; // Tablet - mostrar 3 imágenes
+            } else {
+                return 2; // Mobile - mostrar 2 imágenes
+            }
+        }
+
+        /**
+         * Genera dinámicamente las imágenes para el slide actual
+         */
+        function generateGalleryImages() {
+            if (!galleryContainer) return;
+            
+            galleryContainer.innerHTML = '';
+            
+            const startIndex = currentCarouselIndex * imagesPerView;
+            const endIndex = Math.min(startIndex + imagesPerView, TOTAL_IMAGES);
+            
+            for (let i = startIndex; i < endIndex; i++) {
+                const imageNumber = i + 1;
+                const galleryItem = document.createElement('div');
+                galleryItem.className = 'gallery-item';
+                galleryItem.innerHTML = `
+                    <img src="assets/img/galeria/${imageNumber}.jpg" alt="Evento Chile Eventos ${imageNumber}" loading="lazy">
+                    <div class="gallery-overlay">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                        </svg>
+                    </div>
+                `;
+                
+                galleryItem.addEventListener('click', () => {
+                    openModal(i);
+                });
+                
+                galleryContainer.appendChild(galleryItem);
+            }
+        }
+        
+        /**
+         * Genera los indicadores del carrusel
+         */
+        function generateIndicators() {
+            if (!indicators) return;
+            
+            indicators.innerHTML = '';
+            for (let i = 0; i < totalSlides; i++) {
+                const indicator = document.createElement('span');
+                indicator.className = 'gallery-indicator';
+                if (i === 0) indicator.classList.add('active');
+                
+                indicator.addEventListener('click', () => {
+                    isUserInteracting = true;
+                    goToSlide(i);
+                    resetAutoAdvance();
+                    setTimeout(() => { isUserInteracting = false; }, 500);
+                });
+                
+                indicators.appendChild(indicator);
+            }
+        }
+
+        /**
+         * Actualiza la vista del carrusel
+         */
+        function updateCarousel() {
+            generateGalleryImages();
+            
+            const allIndicators = document.querySelectorAll('.gallery-indicator');
+            allIndicators.forEach((indicator, index) => {
+                indicator.classList.toggle('active', index === currentCarouselIndex);
+            });
+        }
+        
+        /**
+         * Navega a un slide específico
+         */
+        function goToSlide(index) {
+            currentCarouselIndex = index;
+            updateCarousel();
+        }
+        
+        /**
+         * Inicia el avance automático del carrusel
+         */
+        function startAutoAdvance() {
+            if (autoAdvanceTimer) {
+                clearInterval(autoAdvanceTimer);
+            }
+            autoAdvanceTimer = setInterval(() => {
+                if (!isUserInteracting && totalSlides > 1) {
+                    nextSlide();
+                }
+            }, AUTO_ADVANCE_INTERVAL);
+        }
+        
+        /**
+         * Detiene el avance automático
+         */
+        function stopAutoAdvance() {
+            if (autoAdvanceTimer) {
+                clearInterval(autoAdvanceTimer);
+                autoAdvanceTimer = null;
+            }
+        }
+        
+        /**
+         * Reinicia el avance automático después de interacción
+         */
+        function resetAutoAdvance() {
+            stopAutoAdvance();
+            setTimeout(() => {
+                if (!isUserInteracting) {
+                    startAutoAdvance();
+                }
+            }, 1000);
+        }
+        
+        /**
+         * Avanza al siguiente slide
+         */
+        function nextSlide() {
+            currentCarouselIndex = (currentCarouselIndex + 1) % totalSlides;
+            updateCarousel();
+        }
+        
+        /**
+         * Retrocede al slide anterior
+         */
+        function prevSlide() {
+            currentCarouselIndex = (currentCarouselIndex - 1 + totalSlides) % totalSlides;
+            updateCarousel();
+        }
+
+        /**
+         * Abre el modal con una imagen específica
+         */
+        function openModal(imageIndex) {
+            if (!modal || !modalImg) return;
+            
+            currentModalIndex = imageIndex;
+            modalImg.src = `assets/img/galeria/${imageIndex + 1}.jpg`;
+            modalImg.alt = `Evento Chile Eventos ${imageIndex + 1}`;
+            modal.classList.add('active');
+            modal.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden';
+            
+            // Anunciar a lectores de pantalla
+            announceToScreenReader(`Imagen ${imageIndex + 1} de ${TOTAL_IMAGES} abierta en galería`);
+        }
+        
+        /**
+         * Cierra el modal
+         */
+        function closeModalFunc() {
+            if (!modal) return;
+            
+            modal.classList.remove('active');
+            modal.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = 'auto';
+            
+            announceToScreenReader('Galería cerrada');
+        }
+        
+        /**
+         * Navega a la siguiente imagen en el modal
+         */
+        function nextModalImage() {
+            currentModalIndex = (currentModalIndex + 1) % TOTAL_IMAGES;
+            modalImg.src = `assets/img/galeria/${currentModalIndex + 1}.jpg`;
+            modalImg.alt = `Evento Chile Eventos ${currentModalIndex + 1}`;
+            
+            announceToScreenReader(`Imagen ${currentModalIndex + 1} de ${TOTAL_IMAGES}`);
+        }
+        
+        /**
+         * Navega a la imagen anterior en el modal
+         */
+        function prevModalImage() {
+            currentModalIndex = (currentModalIndex - 1 + TOTAL_IMAGES) % TOTAL_IMAGES;
+            modalImg.src = `assets/img/galeria/${currentModalIndex + 1}.jpg`;
+            modalImg.alt = `Evento Chile Eventos ${currentModalIndex + 1}`;
+            
+            announceToScreenReader(`Imagen ${currentModalIndex + 1} de ${TOTAL_IMAGES}`);
+        }
+        
+        // EVENT LISTENERS DEL CARRUSEL
+        
+        if (nextCarouselBtn) {
+            nextCarouselBtn.addEventListener('click', () => {
+                isUserInteracting = true;
+                nextSlide();
+                resetAutoAdvance();
+                setTimeout(() => { isUserInteracting = false; }, 500);
+            });
+        }
+        
+        if (prevCarouselBtn) {
+            prevCarouselBtn.addEventListener('click', () => {
+                isUserInteracting = true;
+                prevSlide();
+                resetAutoAdvance();
+                setTimeout(() => { isUserInteracting = false; }, 500);
+            });
+        }
+
+        // EVENT LISTENERS DEL MODAL
+        
+        if (closeModal) {
+            closeModal.addEventListener('click', closeModalFunc);
+        }
+        
+        if (nextModalBtn) {
+            nextModalBtn.addEventListener('click', nextModalImage);
+        }
+        
+        if (prevModalBtn) {
+            prevModalBtn.addEventListener('click', prevModalImage);
+        }
+        
+        if (modal) {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    closeModalFunc();
+                }
+            });
+        }
+        
+        // NAVEGACIÓN CON TECLADO
+        document.addEventListener('keydown', (e) => {
+            if (modal && modal.classList.contains('active')) {
+                if (e.key === 'Escape') {
+                    closeModalFunc();
+                } else if (e.key === 'ArrowRight') {
+                    nextModalImage();
+                } else if (e.key === 'ArrowLeft') {
+                    prevModalImage();
+                }
+            }
+        });
+        
+        // MANEJO DE CAMBIOS DE TAMAÑO DE VENTANA
+        function handleResize() {
+            const newImagesPerView = getImagesPerView();
+            if (newImagesPerView !== imagesPerView) {
+                imagesPerView = newImagesPerView;
+                totalSlides = Math.ceil(TOTAL_IMAGES / imagesPerView);
+                if (currentCarouselIndex >= totalSlides) {
+                    currentCarouselIndex = totalSlides - 1;
+                }
+                generateIndicators();
+                updateCarousel();
+                resetAutoAdvance();
+            }
+        }
+        
+        // Debounce function para optimizar resize
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+        
+        window.addEventListener('resize', debounce(handleResize, 250));
+        
+        // CONTROL DE AUTO-AVANCE EN HOVER
+        if (galleryContainer) {
+            galleryContainer.addEventListener('mouseenter', () => {
+                isUserInteracting = true;
+                stopAutoAdvance();
+            });
+            
+            galleryContainer.addEventListener('mouseleave', () => {
+                isUserInteracting = false;
+                startAutoAdvance();
+            });
+        }
+        
+        // INICIALIZACIÓN
+        generateIndicators();
+        updateCarousel();
+        
+        // Inicia auto-avance si hay más de una imagen
+        if (totalSlides > 1) {
+            startAutoAdvance();
+        }
+        
+        console.log('Galería de Chile Eventos inicializada correctamente');
+    }
+    
+    // Inicializar galería cuando el DOM esté listo
+    initGallery();
