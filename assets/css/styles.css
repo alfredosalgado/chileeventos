@@ -838,7 +838,56 @@ section {
 
 /* Testimonials Section */
 .testimonials {
-    background: var(--white);
+    background: var(--secondary-color);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Fondo animado con partículas para la sección Testimonials */
+.testimonials::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(2px 2px at 20px 30px, var(--primary-color), transparent),
+        radial-gradient(2px 2px at 40px 70px, rgba(212, 175, 55, 0.8), transparent),
+        radial-gradient(1px 1px at 90px 40px, var(--primary-color), transparent),
+        radial-gradient(1px 1px at 130px 80px, rgba(212, 175, 55, 0.6), transparent),
+        radial-gradient(2px 2px at 160px 30px, var(--primary-color), transparent),
+        radial-gradient(1px 1px at 200px 60px, rgba(212, 175, 55, 0.7), transparent),
+        radial-gradient(2px 2px at 250px 20px, var(--primary-color), transparent),
+        radial-gradient(1px 1px at 300px 90px, rgba(212, 175, 55, 0.5), transparent);
+    background-repeat: repeat;
+    background-size: 300px 150px;
+    animation: testimonialsParticles 25s linear infinite;
+    opacity: 0.4;
+    pointer-events: none;
+    z-index: 1;
+}
+
+@keyframes testimonialsParticles {
+    0% {
+        background-position: 0% 0%;
+    }
+    100% {
+        background-position: 100% 100%;
+    }
+}
+
+.testimonials .container {
+    position: relative;
+    z-index: 2;
+}
+
+.testimonials .section-title {
+    color: var(--white);
+}
+
+.testimonials .section-subtitle {
+    color: var(--gray-medium);
 }
 
 .testimonials-grid {
